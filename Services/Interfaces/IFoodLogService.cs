@@ -8,4 +8,6 @@ public interface IFoodLogService
     Task<FoodLogResponseDto> CreateFoodLogAsync(int userId, CreateFoodLogRequestDto request);
     Task<FoodLogResponseDto?> UpdateFoodLogAsync(int userId, int foodLogId, UpdateFoodLogRequestDto request);
     Task<DailyFoodSummaryResponseDto> GetDailySummaryAsync(int userId, DateOnly logDate);
+
+    Task<bool> DeleteFoodLogAsync(int userId, int foodLogId);
 }

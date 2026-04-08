@@ -220,6 +220,12 @@ namespace FiTrack.Api.Migrations
                         .HasColumnType("int")
                         .HasColumnName("food_id");
 
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_active");
+
                     b.Property<DateOnly>("LogDate")
                         .HasColumnType("date")
                         .HasColumnName("log_date");
@@ -447,7 +453,7 @@ namespace FiTrack.Api.Migrations
 
                     b.ToTable("lkp_exercise_catalog", null, t =>
                         {
-                            t.HasCheckConstraint("CK_lkp_exercise_catalog_body_part", "[body_part] IS NULL OR [body_part] IN ('Chest', 'Shoulders', 'Bicep', 'Tricep', 'Back', 'Quadriceps', 'Hamstring', 'Calf', 'Abs')");
+                            t.HasCheckConstraint("CK_lkp_exercise_catalog_body_part", "[body_part] IS NULL OR [body_part] IN ('Chest', 'Shoulders', 'Bicep', 'Tricep', 'Back', 'Quadriceps', 'Hamstring', 'Calf', 'Abs', 'Forearm')");
 
                             t.HasCheckConstraint("CK_lkp_exercise_catalog_exercise_type", "[exercise_type] IN ('Compound', 'Accessory', 'Core', 'Cardio')");
                         });

@@ -134,6 +134,7 @@ public class FoodLogService : IFoodLogService
             Quantity = request.Quantity,
             MealSlot = request.MealSlot,
             Note = request.Note,
+            IsActive = true,
             CreatedAt = now,
             UpdatedAt = now
         };
@@ -147,7 +148,7 @@ public class FoodLogService : IFoodLogService
     public async Task<FoodLogResponseDto?> UpdateFoodLogAsync(int userId, int foodLogId, UpdateFoodLogRequestDto request)
     {
         var foodLog = await _context.FoodLogs
-            .FirstOrDefaultAsync(fl => fl.Id == foodLogId && fl.UserId == userId);
+            .FirstOrDefaultAsync(fl => fl.Id == foodLogId && fl.UserId == userId && fl.IsActive);
 
         if (foodLog is null)
         {
@@ -176,7 +177,7 @@ public class FoodLogService : IFoodLogService
     public async Task<DailyFoodSummaryResponseDto> GetDailySummaryAsync(int userId, DateOnly logDate)
     {
         var items = await _context.FoodLogs
-            .Where(fl => fl.UserId == userId && fl.LogDate == logDate)
+            .Where(fl => fl.UserId == userId && fl.LogDate == logDate && fl.IsActive)
             .OrderBy(fl => fl.LoggedAt)
             .Select(fl => new FoodLogResponseDto
             {
@@ -229,5 +230,22 @@ public class FoodLogService : IFoodLogService
             MealSlot = foodLog.MealSlot,
             Note = foodLog.Note
         };
+    }
+
+    public async Task<bool> DeleteFoodLogAsync(int userId, int foodLogId)
+    {
+        var foodLog = await _context.FoodLogs
+            .FirstOrDefaultAsync(fl => fl.Id == foodLogId && fl.UserId == userId && fl.IsActive);
+
+        if (foodLog is null)
+        {
+            return false;
+        }
+
+        foodLog.IsActive = false;
+        foodLog.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

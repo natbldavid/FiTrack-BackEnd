@@ -83,6 +83,11 @@ public class FoodLogConfiguration : IEntityTypeConfiguration<FoodLog>
             .HasColumnName("note")
             .HasColumnType("nvarchar(max)");
 
+        entity.Property(x => x.IsActive)
+    .HasColumnName("is_active")
+    .HasDefaultValue(true)
+    .IsRequired();
+
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
             .HasColumnType("datetime2")

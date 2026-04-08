@@ -5,25 +5,25 @@
 namespace FiTrack.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddExerciseDemoGifToExerciseCatalog : Migration
+    public partial class AddFoodLogIsActive : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "exercise_demo_gif",
-                table: "lkp_exercise_catalog",
-                type: "nvarchar(500)",
-                maxLength: 500,
-                nullable: true);
+            migrationBuilder.AddColumn<bool>(
+                name: "is_active",
+                table: "tbl_food_logs",
+                type: "bit",
+                nullable: false,
+                defaultValue: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "exercise_demo_gif",
-                table: "lkp_exercise_catalog");
+                name: "is_active",
+                table: "tbl_food_logs");
         }
     }
 }

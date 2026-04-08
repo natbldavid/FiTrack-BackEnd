@@ -16,7 +16,7 @@ public class ExerciseCatalogConfiguration : IEntityTypeConfiguration<ExerciseCat
 
             t.HasCheckConstraint(
                 "CK_lkp_exercise_catalog_body_part",
-                "[body_part] IS NULL OR [body_part] IN ('Chest', 'Shoulders', 'Bicep', 'Tricep', 'Back', 'Quadriceps', 'Hamstring', 'Calf', 'Abs')");
+                "[body_part] IS NULL OR [body_part] IN ('Chest', 'Shoulders', 'Bicep', 'Tricep', 'Back', 'Quadriceps', 'Hamstring', 'Calf', 'Abs', 'Forearm')");
         });
 
         entity.HasKey(x => x.Id);

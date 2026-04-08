@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiTrack.Api.Migrations
 {
     [DbContext(typeof(FiTrackDbContext))]
-    [Migration("20260308182904_AddWorkoutSessions")]
-    partial class AddWorkoutSessions
+    [Migration("20260407134407_Baseline_Prod_20260407")]
+    partial class Baseline_Prod_20260407
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,99 @@ namespace FiTrack.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("FiTrack.Api.Models.Activities.ActivityLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActivityTypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("activity_type_id");
+
+                    b.Property<int?>("CaloriesBurned")
+                        .HasColumnType("int")
+                        .HasColumnName("calories_burned");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<decimal?>("Distance")
+                        .HasPrecision(8, 2)
+                        .HasColumnType("decimal(8,2)")
+                        .HasColumnName("distance");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int")
+                        .HasColumnName("duration_minutes");
+
+                    b.Property<DateOnly>("LogDate")
+                        .HasColumnType("date")
+                        .HasColumnName("log_date");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("notes");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId", "LogDate");
+
+                    b.ToTable("tbl_activity_logs", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_tbl_activity_logs_duration", "[duration_minutes] > 0");
+                        });
+                });
+
+            modelBuilder.Entity("FiTrack.Api.Models.Activities.ActivityType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("icon");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("lkp_activity_types", (string)null);
+                });
 
             modelBuilder.Entity("FiTrack.Api.Models.Food.Food", b =>
                 {
@@ -169,6 +262,11 @@ namespace FiTrack.Api.Migrations
                         .HasDefaultValue(1m)
                         .HasColumnName("quantity");
 
+                    b.Property<string>("ServingDescriptionSnapshot")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("serving_description_snapshot");
+
                     b.Property<string>("SourceType")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -312,6 +410,11 @@ namespace FiTrack.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("created_at");
 
+                    b.Property<string>("ExerciseDemoGif")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("exercise_demo_gif");
+
                     b.Property<string>("ExerciseType")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -347,9 +450,9 @@ namespace FiTrack.Api.Migrations
 
                     b.ToTable("lkp_exercise_catalog", null, t =>
                         {
-                            t.HasCheckConstraint("CK_lkp_exercise_catalog_body_part", "[body_part] IS NULL OR [body_part] IN ('chest', 'shoulders', 'bicep', 'tricep', 'back', 'legs', 'core')");
+                            t.HasCheckConstraint("CK_lkp_exercise_catalog_body_part", "[body_part] IS NULL OR [body_part] IN ('Chest', 'Shoulders', 'Bicep', 'Tricep', 'Back', 'Quadriceps', 'Hamstring', 'Calf', 'Abs', 'Forearm')");
 
-                            t.HasCheckConstraint("CK_lkp_exercise_catalog_exercise_type", "[exercise_type] IN ('compound', 'accessory')");
+                            t.HasCheckConstraint("CK_lkp_exercise_catalog_exercise_type", "[exercise_type] IN ('Compound', 'Accessory', 'Core', 'Cardio')");
                         });
                 });
 
@@ -550,6 +653,155 @@ namespace FiTrack.Api.Migrations
                         });
                 });
 
+            modelBuilder.Entity("FiTrack.Api.Models.Gym.WorkoutSessionExercise", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal?>("ActualWorkingWeight")
+                        .HasPrecision(6, 2)
+                        .HasColumnType("decimal(6,2)")
+                        .HasColumnName("actual_working_weight");
+
+                    b.Property<string>("BodyPartSnapshot")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("body_part_snapshot");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("ExerciseId")
+                        .HasColumnType("int")
+                        .HasColumnName("exercise_id");
+
+                    b.Property<string>("ExerciseNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasColumnName("exercise_name_snapshot");
+
+                    b.Property<int>("ExerciseOrder")
+                        .HasColumnType("int")
+                        .HasColumnName("exercise_order");
+
+                    b.Property<string>("ExerciseTypeSnapshot")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("exercise_type_snapshot");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("notes");
+
+                    b.Property<decimal?>("PlannedWorkingWeight")
+                        .HasPrecision(6, 2)
+                        .HasColumnType("decimal(6,2)")
+                        .HasColumnName("planned_working_weight");
+
+                    b.Property<int?>("TargetRepsMax")
+                        .HasColumnType("int")
+                        .HasColumnName("target_reps_max");
+
+                    b.Property<int?>("TargetRepsMin")
+                        .HasColumnType("int")
+                        .HasColumnName("target_reps_min");
+
+                    b.Property<int?>("TargetSets")
+                        .HasColumnType("int")
+                        .HasColumnName("target_sets");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("WorkoutSessionId")
+                        .HasColumnType("int")
+                        .HasColumnName("workout_session_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.HasIndex("WorkoutSessionId");
+
+                    b.HasIndex("WorkoutSessionId", "ExerciseOrder")
+                        .IsUnique();
+
+                    b.ToTable("tbl_workout_session_exercises", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_exercise_order", "[exercise_order] > 0");
+
+                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_target_reps_max", "[target_reps_max] IS NULL OR [target_reps_max] > 0");
+
+                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_target_reps_min", "[target_reps_min] IS NULL OR [target_reps_min] > 0");
+
+                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_target_reps_range", "([target_reps_min] IS NULL AND [target_reps_max] IS NULL) OR ([target_reps_min] IS NOT NULL AND [target_reps_max] IS NOT NULL AND [target_reps_max] >= [target_reps_min])");
+
+                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_target_sets", "[target_sets] IS NULL OR [target_sets] > 0");
+                        });
+                });
+
+            modelBuilder.Entity("FiTrack.Api.Models.Gym.WorkoutSetLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Completed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("completed");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("Reps")
+                        .HasColumnType("int")
+                        .HasColumnName("reps");
+
+                    b.Property<int>("SetNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("set_number");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updated_at");
+
+                    b.Property<decimal?>("Weight")
+                        .HasPrecision(6, 2)
+                        .HasColumnType("decimal(6,2)")
+                        .HasColumnName("weight");
+
+                    b.Property<int>("WorkoutSessionExerciseId")
+                        .HasColumnType("int")
+                        .HasColumnName("workout_session_exercise_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkoutSessionExerciseId");
+
+                    b.HasIndex("WorkoutSessionExerciseId", "SetNumber")
+                        .IsUnique();
+
+                    b.ToTable("tbl_workout_set_logs", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_tbl_workout_set_logs_reps", "[reps] >= 0");
+
+                            t.HasCheckConstraint("CK_tbl_workout_set_logs_set_number", "[set_number] > 0");
+                        });
+                });
+
             modelBuilder.Entity("FiTrack.Api.Models.Users.User", b =>
                 {
                     b.Property<int>("Id")
@@ -691,8 +943,13 @@ namespace FiTrack.Api.Migrations
                         .HasColumnType("int")
                         .HasColumnName("weekly_exercise_goal");
 
-                    b.Property<int?>("WeightGoal")
+                    b.Property<int?>("WeeklyGymGoal")
                         .HasColumnType("int")
+                        .HasColumnName("weekly_gym_goal");
+
+                    b.Property<decimal?>("WeightGoal")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)")
                         .HasColumnName("weight_goal");
 
                     b.HasKey("UserId");
@@ -744,6 +1001,25 @@ namespace FiTrack.Api.Migrations
                         .IsUnique();
 
                     b.ToTable("tbl_weight_logs", (string)null);
+                });
+
+            modelBuilder.Entity("FiTrack.Api.Models.Activities.ActivityLog", b =>
+                {
+                    b.HasOne("FiTrack.Api.Models.Activities.ActivityType", "ActivityType")
+                        .WithMany("ActivityLogs")
+                        .HasForeignKey("ActivityTypeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("FiTrack.Api.Models.Users.User", "User")
+                        .WithMany("ActivityLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ActivityType");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FiTrack.Api.Models.Food.Food", b =>
@@ -860,6 +1136,36 @@ namespace FiTrack.Api.Migrations
                     b.Navigation("WorkoutDay");
                 });
 
+            modelBuilder.Entity("FiTrack.Api.Models.Gym.WorkoutSessionExercise", b =>
+                {
+                    b.HasOne("FiTrack.Api.Models.Gym.ExerciseCatalog", "ExerciseCatalog")
+                        .WithMany("WorkoutSessionExercises")
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("FiTrack.Api.Models.Gym.WorkoutSession", "WorkoutSession")
+                        .WithMany("WorkoutSessionExercises")
+                        .HasForeignKey("WorkoutSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExerciseCatalog");
+
+                    b.Navigation("WorkoutSession");
+                });
+
+            modelBuilder.Entity("FiTrack.Api.Models.Gym.WorkoutSetLog", b =>
+                {
+                    b.HasOne("FiTrack.Api.Models.Gym.WorkoutSessionExercise", "WorkoutSessionExercise")
+                        .WithMany("WorkoutSetLogs")
+                        .HasForeignKey("WorkoutSessionExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WorkoutSessionExercise");
+                });
+
             modelBuilder.Entity("FiTrack.Api.Models.Users.UserGoalsHistory", b =>
                 {
                     b.HasOne("FiTrack.Api.Models.Users.User", "User")
@@ -893,6 +1199,11 @@ namespace FiTrack.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FiTrack.Api.Models.Activities.ActivityType", b =>
+                {
+                    b.Navigation("ActivityLogs");
+                });
+
             modelBuilder.Entity("FiTrack.Api.Models.Food.Food", b =>
                 {
                     b.Navigation("FoodLogs");
@@ -910,6 +1221,8 @@ namespace FiTrack.Api.Migrations
             modelBuilder.Entity("FiTrack.Api.Models.Gym.ExerciseCatalog", b =>
                 {
                     b.Navigation("WorkoutDayExercises");
+
+                    b.Navigation("WorkoutSessionExercises");
                 });
 
             modelBuilder.Entity("FiTrack.Api.Models.Gym.WorkoutDay", b =>
@@ -919,8 +1232,20 @@ namespace FiTrack.Api.Migrations
                     b.Navigation("WorkoutSessions");
                 });
 
+            modelBuilder.Entity("FiTrack.Api.Models.Gym.WorkoutSession", b =>
+                {
+                    b.Navigation("WorkoutSessionExercises");
+                });
+
+            modelBuilder.Entity("FiTrack.Api.Models.Gym.WorkoutSessionExercise", b =>
+                {
+                    b.Navigation("WorkoutSetLogs");
+                });
+
             modelBuilder.Entity("FiTrack.Api.Models.Users.User", b =>
                 {
+                    b.Navigation("ActivityLogs");
+
                     b.Navigation("FoodLogs");
 
                     b.Navigation("Foods");
