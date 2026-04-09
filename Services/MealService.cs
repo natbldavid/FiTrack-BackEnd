@@ -36,6 +36,7 @@ public class MealService : IMealService
             UserId = userId,
             Name = request.Name,
             Description = request.Description,
+            ImageUrl = request.ImageUrl,
             IsFavorite = request.IsFavorite,
             CreatedAt = now,
             UpdatedAt = now,
@@ -81,6 +82,7 @@ public class MealService : IMealService
 
         meal.Name = request.Name;
         meal.Description = request.Description;
+        meal.ImageUrl = request.ImageUrl;
         meal.IsFavorite = request.IsFavorite;
         meal.UpdatedAt = now;
 
@@ -139,6 +141,7 @@ public class MealService : IMealService
             Id = meal.Id,
             Name = meal.Name,
             Description = meal.Description,
+            ImageUrl = meal.ImageUrl,
             IsFavorite = meal.IsFavorite,
             TotalCalories = totalCalories,
             TotalProtein = totalProtein,
@@ -156,6 +159,7 @@ public class MealService : IMealService
             FoodId = i.FoodId,
             FoodName = i.Food.Name,
             Quantity = i.Quantity,
+            FoodImageUrl = i.Food.ImageUrl,
             Calories = (int)Math.Round(i.Food.Calories * i.Quantity, MidpointRounding.AwayFromZero),
             Protein = i.Food.Protein * i.Quantity,
             Carbs = i.Food.Carbs * i.Quantity,
@@ -167,6 +171,7 @@ public class MealService : IMealService
             Id = meal.Id,
             Name = meal.Name,
             Description = meal.Description,
+            ImageUrl = meal.ImageUrl,
             IsFavorite = meal.IsFavorite,
             TotalCalories = items.Sum(i => i.Calories),
             TotalProtein = items.Sum(i => i.Protein),

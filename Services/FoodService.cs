@@ -1,4 +1,5 @@
-﻿using FiTrack.Api.Data;
+﻿using Azure.Core;
+using FiTrack.Api.Data;
 using FiTrack.Api.Dtos.Food.Requests;
 using FiTrack.Api.Dtos.Food.Responses;
 using FiTrack.Api.Models.Food;
@@ -33,6 +34,7 @@ public class FoodService : IFoodService
             UserId = userId,
             Name = request.Name,
             ServingDescription = request.ServingDescription,
+            ImageUrl = request.ImageUrl,
             Calories = request.Calories,
             Protein = request.Protein,
             Carbs = request.Carbs,
@@ -51,6 +53,7 @@ public class FoodService : IFoodService
             UserId = food.UserId,
             Name = food.Name,
             ServingDescription = food.ServingDescription,
+            ImageUrl = food.ImageUrl,
             Calories = food.Calories,
             Protein = food.Protein,
             Carbs = food.Carbs,
@@ -72,6 +75,7 @@ public class FoodService : IFoodService
 
         food.Name = request.Name;
         food.ServingDescription = request.ServingDescription;
+        food.ImageUrl = request.ImageUrl;
         food.Calories = request.Calories;
         food.Protein = request.Protein;
         food.Carbs = request.Carbs;
@@ -88,6 +92,7 @@ public class FoodService : IFoodService
             UserId = food.UserId,
             Name = food.Name,
             ServingDescription = food.ServingDescription,
+            ImageUrl = food.ImageUrl,
             Calories = food.Calories,
             Protein = food.Protein,
             Carbs = food.Carbs,
@@ -107,6 +112,7 @@ public class FoodService : IFoodService
                 Id = f.Id,
                 Name = f.Name,
                 ServingDescription = f.ServingDescription,
+                ImageUrl = f.ImageUrl,
                 Calories = f.Calories,
                 Protein = f.Protein,
                 Carbs = f.Carbs,

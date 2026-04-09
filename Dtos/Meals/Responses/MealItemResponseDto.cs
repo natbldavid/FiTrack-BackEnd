@@ -7,6 +7,8 @@ public class MealItemResponseDto
     public string FoodName { get; set; } = null!;
     public decimal Quantity { get; set; }
 
+    public string? FoodImageUrl { get; set; }
+
     public int Calories { get; set; }
     public decimal Protein { get; set; }
     public decimal Carbs { get; set; }

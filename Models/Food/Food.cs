@@ -10,6 +10,8 @@ public class Food
 
     public string? ServingDescription { get; set; }
 
+    public string? ImageUrl { get; set; }
+
     public int Calories { get; set; }
 
     public decimal Protein { get; set; }

@@ -29,6 +29,10 @@ public class FoodConfiguration : IEntityTypeConfiguration<Food>
             .HasColumnName("serving_description")
             .HasMaxLength(200);
 
+        entity.Property(x => x.ImageUrl)
+    .HasColumnName("image_url")
+    .HasMaxLength(500);
+
         entity.Property(x => x.Calories)
             .HasColumnName("calories")
             .HasDefaultValue(0)

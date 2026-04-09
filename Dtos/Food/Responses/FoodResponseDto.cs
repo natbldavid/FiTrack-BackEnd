@@ -8,6 +8,8 @@ public class FoodResponseDto
     public string Name { get; set; } = null!;
     public string? ServingDescription { get; set; }
 
+    public string? ImageUrl { get; set; }
+
     public int Calories { get; set; }
     public decimal Protein { get; set; }
     public decimal Carbs { get; set; }

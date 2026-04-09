@@ -11,6 +11,10 @@ public class UpdateMealRequestDto
     [StringLength(500)]
     public string? Description { get; set; }
 
+    [StringLength(500)]
+    [Url]
+    public string? ImageUrl { get; set; }
+
     public bool IsFavorite { get; set; }
 
     [MinLength(1)]

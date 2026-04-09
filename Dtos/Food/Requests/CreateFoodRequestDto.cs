@@ -11,6 +11,10 @@ public class CreateFoodRequestDto
     [StringLength(100)]
     public string? ServingDescription { get; set; }
 
+    [StringLength(500)]
+    [Url]
+    public string? ImageUrl { get; set; }
+
     [Range(0, 10000)]
     public int Calories { get; set; }
 

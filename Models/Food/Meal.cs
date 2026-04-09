@@ -10,6 +10,8 @@ public class Meal
 
     public string? Description { get; set; }
 
+    public string? ImageUrl { get; set; }
+
     public bool IsFavorite { get; set; }
 
     public DateTime CreatedAt { get; set; }
