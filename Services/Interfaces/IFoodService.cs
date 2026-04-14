@@ -10,4 +10,6 @@ public interface IFoodService
     Task<FoodResponseDto?> UpdateFoodAsync(int userId, int foodId, UpdateFoodRequestDto request);
 
     Task<List<FoodSummaryResponseDto>> GetFoodsAsync(int userId);
+
+    Task<FoodResponseDto?> GetFoodByIdAsync(int userId, int foodId);
 }

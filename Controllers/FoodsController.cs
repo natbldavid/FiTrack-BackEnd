@@ -55,10 +55,30 @@ public class FoodsController : ControllerBase
 
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(FoodResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult GetById(int id)
+    public async Task<ActionResult<FoodResponseDto>> GetById(int id)
     {
-        return NotFound();
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrWhiteSpace(userIdClaim))
+        {
+            return Unauthorized();
+        }
+
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var food = await _foodService.GetFoodByIdAsync(userId, id);
+
+        if (food is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(food);
     }
 
     [HttpPut("{id:int}")]

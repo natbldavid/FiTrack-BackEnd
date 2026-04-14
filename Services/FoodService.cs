@@ -102,6 +102,30 @@ public class FoodService : IFoodService
             UpdatedAt = food.UpdatedAt
         };
     }
+
+    public async Task<FoodResponseDto?> GetFoodByIdAsync(int userId, int foodId)
+    {
+        var food = await _context.Foods
+            .Where(x => x.UserId == userId && x.Id == foodId)
+            .Select(x => new FoodResponseDto
+            {
+                Id = x.Id,
+                UserId = x.UserId,
+                Name = x.Name,
+                ServingDescription = x.ServingDescription,
+                ImageUrl = x.ImageUrl,
+                Calories = x.Calories,
+                Protein = x.Protein,
+                Carbs = x.Carbs,
+                Fat = x.Fat,
+                IsFavorite = x.IsFavorite,
+                CreatedAt = x.CreatedAt,
+                UpdatedAt = x.UpdatedAt
+            })
+            .FirstOrDefaultAsync();
+
+        return food;
+    }
     public async Task<List<FoodSummaryResponseDto>> GetFoodsAsync(int userId)
     {
         return await _context.Foods
