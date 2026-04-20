@@ -116,4 +116,25 @@ public class MealsController : ControllerBase
         return !string.IsNullOrWhiteSpace(userIdClaim)
             && int.TryParse(userIdClaim, out userId);
     }
+
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        if (!TryGetUserId(out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var deleted = await _mealService.DeleteMealAsync(userId, id);
+
+        if (!deleted)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
 }

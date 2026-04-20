@@ -39,6 +39,7 @@ public class WorkoutSessionService : IWorkoutSessionService
             SessionDate = today,
             StartedAt = now,
             Status = "in_progress",
+            IsActive = true,
             CreatedAt = now,
             UpdatedAt = now,
             WorkoutSessionExercises = workoutDay.WorkoutDayExercises
@@ -73,7 +74,9 @@ public class WorkoutSessionService : IWorkoutSessionService
         var session = await _context.WorkoutSessions
             .Include(s => s.WorkoutSessionExercises)
                 .ThenInclude(x => x.WorkoutSetLogs)
-            .FirstOrDefaultAsync(s => s.Id == workoutSessionId && s.UserId == userId);
+            .FirstOrDefaultAsync(s => s.Id == workoutSessionId
+                                   && s.UserId == userId
+                                   && s.IsActive);
 
         if (session is null)
         {
@@ -86,7 +89,7 @@ public class WorkoutSessionService : IWorkoutSessionService
     public async Task<List<WorkoutSessionSummaryResponseDto>> GetWorkoutSessionsAsync(int userId)
     {
         var sessions = await _context.WorkoutSessions
-            .Where(s => s.UserId == userId)
+            .Where(s => s.UserId == userId && s.IsActive)
             .Include(s => s.WorkoutSessionExercises)
             .OrderByDescending(s => s.SessionDate)
             .ThenByDescending(s => s.StartedAt)
@@ -109,7 +112,9 @@ public class WorkoutSessionService : IWorkoutSessionService
         var session = await _context.WorkoutSessions
             .Include(s => s.WorkoutSessionExercises)
                 .ThenInclude(x => x.WorkoutSetLogs)
-            .FirstOrDefaultAsync(s => s.Id == workoutSessionId && s.UserId == userId);
+            .FirstOrDefaultAsync(s => s.Id == workoutSessionId
+                                   && s.UserId == userId
+                                   && s.IsActive);
 
         if (session is null)
         {
@@ -159,7 +164,6 @@ public class WorkoutSessionService : IWorkoutSessionService
 
         sessionExercise.ActualWorkingWeight = request.Weight;
         sessionExercise.UpdatedAt = now;
-
         session.UpdatedAt = now;
 
         await _context.SaveChangesAsync();
@@ -171,7 +175,9 @@ public class WorkoutSessionService : IWorkoutSessionService
     {
         var session = await _context.WorkoutSessions
             .Include(s => s.WorkoutSessionExercises)
-            .FirstOrDefaultAsync(s => s.Id == workoutSessionId && s.UserId == userId);
+            .FirstOrDefaultAsync(s => s.Id == workoutSessionId
+                                   && s.UserId == userId
+                                   && s.IsActive);
 
         if (session is null)
         {
@@ -215,6 +221,31 @@ public class WorkoutSessionService : IWorkoutSessionService
         await _context.SaveChangesAsync();
 
         return await GetWorkoutSessionByIdAsync(userId, session.Id);
+    }
+
+    public async Task<bool> DeleteWorkoutSessionAsync(int userId, int workoutSessionId)
+    {
+        var session = await _context.WorkoutSessions
+            .FirstOrDefaultAsync(s => s.Id == workoutSessionId
+                                   && s.UserId == userId
+                                   && s.IsActive);
+
+        if (session is null)
+        {
+            return false;
+        }
+
+        if (session.Status == "completed")
+        {
+            throw new InvalidOperationException("Completed sessions cannot be deleted.");
+        }
+
+        session.IsActive = false;
+        session.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
     private static WorkoutSessionResponseDto MapToWorkoutSessionResponseDto(WorkoutSession session)

@@ -21,7 +21,7 @@ public class MealService : IMealService
         var foodIds = request.Items.Select(i => i.FoodId).Distinct().ToList();
 
         var foods = await _context.Foods
-            .Where(f => f.UserId == userId && foodIds.Contains(f.Id))
+            .Where(f => f.UserId == userId && f.IsActive && foodIds.Contains(f.Id))
             .ToListAsync();
 
         if (foods.Count != foodIds.Count)
@@ -38,6 +38,7 @@ public class MealService : IMealService
             Description = request.Description,
             ImageUrl = request.ImageUrl,
             IsFavorite = request.IsFavorite,
+            IsActive = true,
             CreatedAt = now,
             UpdatedAt = now,
             MealItems = request.Items.Select(i => new MealItem
@@ -60,7 +61,7 @@ public class MealService : IMealService
     {
         var meal = await _context.Meals
             .Include(m => m.MealItems)
-            .FirstOrDefaultAsync(m => m.Id == mealId && m.UserId == userId);
+            .FirstOrDefaultAsync(m => m.Id == mealId && m.UserId == userId && m.IsActive);
 
         if (meal is null)
         {
@@ -70,7 +71,7 @@ public class MealService : IMealService
         var foodIds = request.Items.Select(i => i.FoodId).Distinct().ToList();
 
         var foods = await _context.Foods
-            .Where(f => f.UserId == userId && foodIds.Contains(f.Id))
+            .Where(f => f.UserId == userId && f.IsActive && foodIds.Contains(f.Id))
             .ToListAsync();
 
         if (foods.Count != foodIds.Count)
@@ -105,7 +106,7 @@ public class MealService : IMealService
     public async Task<List<MealSummaryResponseDto>> GetMealsAsync(int userId)
     {
         var meals = await _context.Meals
-            .Where(m => m.UserId == userId)
+            .Where(m => m.UserId == userId && m.IsActive)
             .Include(m => m.MealItems)
                 .ThenInclude(mi => mi.Food)
             .OrderBy(m => m.Name)
@@ -119,7 +120,7 @@ public class MealService : IMealService
         var meal = await _context.Meals
             .Include(m => m.MealItems)
                 .ThenInclude(mi => mi.Food)
-            .FirstOrDefaultAsync(m => m.Id == mealId && m.UserId == userId);
+            .FirstOrDefaultAsync(m => m.Id == mealId && m.UserId == userId && m.IsActive);
 
         if (meal is null)
         {
@@ -129,12 +130,31 @@ public class MealService : IMealService
         return MapToMealDetailResponseDto(meal);
     }
 
+    public async Task<bool> DeleteMealAsync(int userId, int mealId)
+    {
+        var meal = await _context.Meals
+            .FirstOrDefaultAsync(m => m.Id == mealId && m.UserId == userId && m.IsActive);
+
+        if (meal is null)
+        {
+            return false;
+        }
+
+        meal.IsActive = false;
+        meal.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
     private static MealSummaryResponseDto MapToMealSummaryResponseDto(Meal meal)
     {
-        var totalCalories = meal.MealItems.Sum(i => (int)Math.Round(i.Food.Calories * i.Quantity, MidpointRounding.AwayFromZero));
-        var totalProtein = meal.MealItems.Sum(i => i.Food.Protein * i.Quantity);
-        var totalCarbs = meal.MealItems.Sum(i => i.Food.Carbs * i.Quantity);
-        var totalFat = meal.MealItems.Sum(i => i.Food.Fat * i.Quantity);
+        var activeItems = meal.MealItems.Where(i => i.Food != null && i.Food.IsActive).ToList();
+
+        var totalCalories = activeItems.Sum(i => (int)Math.Round(i.Food.Calories * i.Quantity, MidpointRounding.AwayFromZero));
+        var totalProtein = activeItems.Sum(i => i.Food.Protein * i.Quantity);
+        var totalCarbs = activeItems.Sum(i => i.Food.Carbs * i.Quantity);
+        var totalFat = activeItems.Sum(i => i.Food.Fat * i.Quantity);
 
         return new MealSummaryResponseDto
         {
@@ -147,24 +167,27 @@ public class MealService : IMealService
             TotalProtein = totalProtein,
             TotalCarbs = totalCarbs,
             TotalFat = totalFat,
-            ItemCount = meal.MealItems.Count
+            ItemCount = activeItems.Count
         };
     }
 
     private static MealDetailResponseDto MapToMealDetailResponseDto(Meal meal)
     {
-        var items = meal.MealItems.Select(i => new MealItemResponseDto
-        {
-            Id = i.Id,
-            FoodId = i.FoodId,
-            FoodName = i.Food.Name,
-            Quantity = i.Quantity,
-            FoodImageUrl = i.Food.ImageUrl,
-            Calories = (int)Math.Round(i.Food.Calories * i.Quantity, MidpointRounding.AwayFromZero),
-            Protein = i.Food.Protein * i.Quantity,
-            Carbs = i.Food.Carbs * i.Quantity,
-            Fat = i.Food.Fat * i.Quantity
-        }).ToList();
+        var items = meal.MealItems
+            .Where(i => i.Food != null && i.Food.IsActive)
+            .Select(i => new MealItemResponseDto
+            {
+                Id = i.Id,
+                FoodId = i.FoodId,
+                FoodName = i.Food.Name,
+                Quantity = i.Quantity,
+                FoodImageUrl = i.Food.ImageUrl,
+                Calories = (int)Math.Round(i.Food.Calories * i.Quantity, MidpointRounding.AwayFromZero),
+                Protein = i.Food.Protein * i.Quantity,
+                Carbs = i.Food.Carbs * i.Quantity,
+                Fat = i.Food.Fat * i.Quantity
+            })
+            .ToList();
 
         return new MealDetailResponseDto
         {

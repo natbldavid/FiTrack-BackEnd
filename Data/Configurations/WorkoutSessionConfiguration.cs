@@ -56,6 +56,11 @@ public class WorkoutSessionConfiguration : IEntityTypeConfiguration<WorkoutSessi
             .HasColumnName("notes")
             .HasColumnType("nvarchar(max)");
 
+        entity.Property(x => x.IsActive)
+            .HasColumnName("is_active")
+            .HasDefaultValue(true)
+            .IsRequired();
+
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
             .HasColumnType("datetime2")
@@ -75,6 +80,8 @@ public class WorkoutSessionConfiguration : IEntityTypeConfiguration<WorkoutSessi
         entity.HasIndex(x => x.WorkoutDayId);
 
         entity.HasIndex(x => x.Status);
+
+        entity.HasIndex(x => new { x.UserId, x.IsActive });
 
         entity.HasOne(x => x.User)
             .WithMany(x => x.WorkoutSessions)

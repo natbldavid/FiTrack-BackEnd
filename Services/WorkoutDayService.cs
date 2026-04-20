@@ -146,6 +146,7 @@ public class WorkoutDayService : IWorkoutDayService
                     ExerciseName = x.ExerciseCatalog.Name,
                     BodyPart = x.ExerciseCatalog.BodyPart,
                     ExerciseType = x.ExerciseCatalog.ExerciseType,
+                    ExerciseDemoGif = x.ExerciseCatalog.ExerciseDemoGif,
                     ExerciseOrder = x.ExerciseOrder,
                     TargetSets = x.TargetSets,
                     TargetRepsMin = x.TargetRepsMin,

@@ -12,4 +12,6 @@ public interface IFoodService
     Task<List<FoodSummaryResponseDto>> GetFoodsAsync(int userId);
 
     Task<FoodResponseDto?> GetFoodByIdAsync(int userId, int foodId);
+
+    Task<bool> DeleteFoodAsync(int userId, int foodId);
 }

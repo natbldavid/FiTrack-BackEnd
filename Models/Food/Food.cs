@@ -22,6 +22,8 @@ public class Food
 
     public bool IsFavorite { get; set; }
 
+    public bool IsActive { get; set; } = true;
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }

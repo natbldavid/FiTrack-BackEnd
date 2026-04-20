@@ -8,6 +8,8 @@ public class WorkoutDayExerciseResponseDto
     public string BodyPart { get; set; } = null!;
     public string ExerciseType { get; set; } = null!;
 
+    public string? ExerciseDemoGif { get; set; }
+
     public int ExerciseOrder { get; set; }
 
     public int TargetSets { get; set; }

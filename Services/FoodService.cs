@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using FiTrack.Api.Data;
+﻿using FiTrack.Api.Data;
 using FiTrack.Api.Dtos.Food.Requests;
 using FiTrack.Api.Dtos.Food.Responses;
 using FiTrack.Api.Models.Food;
@@ -40,6 +39,7 @@ public class FoodService : IFoodService
             Carbs = request.Carbs,
             Fat = request.Fat,
             IsFavorite = request.IsFavorite,
+            IsActive = true,
             CreatedAt = now,
             UpdatedAt = now
         };
@@ -63,10 +63,11 @@ public class FoodService : IFoodService
             UpdatedAt = food.UpdatedAt
         };
     }
+
     public async Task<FoodResponseDto?> UpdateFoodAsync(int userId, int foodId, UpdateFoodRequestDto request)
     {
         var food = await _context.Foods
-            .FirstOrDefaultAsync(f => f.Id == foodId && f.UserId == userId);
+            .FirstOrDefaultAsync(f => f.Id == foodId && f.UserId == userId && f.IsActive);
 
         if (food is null)
         {
@@ -81,7 +82,6 @@ public class FoodService : IFoodService
         food.Carbs = request.Carbs;
         food.Fat = request.Fat;
         food.IsFavorite = request.IsFavorite;
-
         food.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
@@ -106,7 +106,7 @@ public class FoodService : IFoodService
     public async Task<FoodResponseDto?> GetFoodByIdAsync(int userId, int foodId)
     {
         var food = await _context.Foods
-            .Where(x => x.UserId == userId && x.Id == foodId)
+            .Where(x => x.UserId == userId && x.Id == foodId && x.IsActive)
             .Select(x => new FoodResponseDto
             {
                 Id = x.Id,
@@ -126,10 +126,11 @@ public class FoodService : IFoodService
 
         return food;
     }
+
     public async Task<List<FoodSummaryResponseDto>> GetFoodsAsync(int userId)
     {
         return await _context.Foods
-            .Where(f => f.UserId == userId)
+            .Where(f => f.UserId == userId && f.IsActive)
             .OrderBy(f => f.Name)
             .Select(f => new FoodSummaryResponseDto
             {
@@ -144,5 +145,22 @@ public class FoodService : IFoodService
                 IsFavorite = f.IsFavorite
             })
             .ToListAsync();
+    }
+
+    public async Task<bool> DeleteFoodAsync(int userId, int foodId)
+    {
+        var food = await _context.Foods
+            .FirstOrDefaultAsync(f => f.Id == foodId && f.UserId == userId && f.IsActive);
+
+        if (food is null)
+        {
+            return false;
+        }
+
+        food.IsActive = false;
+        food.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

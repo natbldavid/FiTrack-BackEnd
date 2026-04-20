@@ -61,6 +61,11 @@ public class FoodConfiguration : IEntityTypeConfiguration<Food>
             .HasDefaultValue(false)
             .IsRequired();
 
+        entity.Property(x => x.IsActive)
+    .HasColumnName("is_active")
+    .HasDefaultValue(true)
+    .IsRequired();
+
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
             .HasColumnType("datetime2")

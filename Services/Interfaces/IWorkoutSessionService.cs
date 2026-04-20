@@ -10,4 +10,5 @@ public interface IWorkoutSessionService
     Task<List<WorkoutSessionSummaryResponseDto>> GetWorkoutSessionsAsync(int userId);
     Task<WorkoutSessionResponseDto?> UpsertWorkoutSetLogAsync(int userId, int workoutSessionId, UpdateWorkoutSetLogRequestDto request);
     Task<WorkoutSessionResponseDto?> CompleteWorkoutSessionAsync(int userId, int workoutSessionId, CompleteWorkoutSessionRequestDto request);
+    Task<bool> DeleteWorkoutSessionAsync(int userId, int workoutSessionId);
 }
