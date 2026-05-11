@@ -27,7 +27,6 @@ public class FoodLogConfiguration : IEntityTypeConfiguration<FoodLog>
 
         entity.Property(x => x.LoggedAt)
             .HasColumnName("logged_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.Property(x => x.SourceType)
@@ -81,7 +80,7 @@ public class FoodLogConfiguration : IEntityTypeConfiguration<FoodLog>
 
         entity.Property(x => x.Note)
             .HasColumnName("note")
-            .HasColumnType("nvarchar(max)");
+            .HasColumnType("text");
 
         entity.Property(x => x.IsActive)
     .HasColumnName("is_active")
@@ -90,12 +89,10 @@ public class FoodLogConfiguration : IEntityTypeConfiguration<FoodLog>
 
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.Property(x => x.UpdatedAt)
             .HasColumnName("updated_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.HasIndex(x => new { x.UserId, x.LogDate });
@@ -125,11 +122,11 @@ public class FoodLogConfiguration : IEntityTypeConfiguration<FoodLog>
         {
             t.HasCheckConstraint(
                 "CK_tbl_food_logs_source_type",
-                "[source_type] IN ('food', 'meal', 'custom')");
+                "source_type IN ('food', 'meal', 'custom')");
 
             t.HasCheckConstraint(
                 "CK_tbl_food_logs_meal_slot",
-                "[meal_slot] IS NULL OR [meal_slot] IN ('breakfast', 'lunch', 'dinner', 'snack')");
+                "meal_slot IS NULL OR meal_slot IN ('breakfast', 'lunch', 'dinner', 'snack')");
         });
     }
 }

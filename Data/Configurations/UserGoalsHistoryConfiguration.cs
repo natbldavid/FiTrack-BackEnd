@@ -22,12 +22,10 @@ public class UserGoalsHistoryConfiguration : IEntityTypeConfiguration<UserGoalsH
 
         entity.Property(x => x.EffectiveFrom)
             .HasColumnName("effective_from")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.Property(x => x.EffectiveTo)
-            .HasColumnName("effective_to")
-            .HasColumnType("datetime2");
+            .HasColumnName("effective_to");
 
         entity.Property(x => x.DailyCalorieGoal)
             .HasColumnName("daily_calorie_goal");
@@ -50,7 +48,6 @@ public class UserGoalsHistoryConfiguration : IEntityTypeConfiguration<UserGoalsH
 
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.HasIndex(x => x.UserId);

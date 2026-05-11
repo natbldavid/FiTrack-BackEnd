@@ -12,24 +12,24 @@ public class WorkoutSessionExerciseConfiguration : IEntityTypeConfiguration<Work
         {
             t.HasCheckConstraint(
                 "CK_tbl_workout_session_exercises_exercise_order",
-                "[exercise_order] > 0");
+                "exercise_order > 0");
 
             t.HasCheckConstraint(
                 "CK_tbl_workout_session_exercises_target_sets",
-                "[target_sets] IS NULL OR [target_sets] > 0");
+                "target_sets IS NULL OR target_sets > 0");
 
             t.HasCheckConstraint(
                 "CK_tbl_workout_session_exercises_target_reps_min",
-                "[target_reps_min] IS NULL OR [target_reps_min] > 0");
+                "target_reps_min IS NULL OR target_reps_min > 0");
 
             t.HasCheckConstraint(
                 "CK_tbl_workout_session_exercises_target_reps_max",
-                "[target_reps_max] IS NULL OR [target_reps_max] > 0");
+                "target_reps_max IS NULL OR target_reps_max > 0");
 
             t.HasCheckConstraint(
                 "CK_tbl_workout_session_exercises_target_reps_range",
-                "([target_reps_min] IS NULL AND [target_reps_max] IS NULL) OR " +
-                "([target_reps_min] IS NOT NULL AND [target_reps_max] IS NOT NULL AND [target_reps_max] >= [target_reps_min])");
+                "(target_reps_min IS NULL AND target_reps_max IS NULL) OR " +
+                "(target_reps_min IS NOT NULL AND target_reps_max IS NOT NULL AND target_reps_max >= target_reps_min)");
         });
 
         entity.HasKey(x => x.Id);
@@ -82,16 +82,14 @@ public class WorkoutSessionExerciseConfiguration : IEntityTypeConfiguration<Work
 
         entity.Property(x => x.Notes)
             .HasColumnName("notes")
-            .HasColumnType("nvarchar(max)");
+            .HasColumnType("text");
 
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.Property(x => x.UpdatedAt)
             .HasColumnName("updated_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.HasIndex(x => x.WorkoutSessionId);

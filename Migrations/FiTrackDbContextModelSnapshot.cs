@@ -3,8 +3,8 @@ using System;
 using FiTrack.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -18,38 +18,38 @@ namespace FiTrack.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.24")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("FiTrack.Api.Models.Activities.ActivityLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ActivityTypeId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("activity_type_id");
 
                     b.Property<int?>("CaloriesBurned")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("calories_burned");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<decimal?>("Distance")
                         .HasPrecision(8, 2)
-                        .HasColumnType("decimal(8,2)")
+                        .HasColumnType("numeric(8,2)")
                         .HasColumnName("distance");
 
                     b.Property<int>("DurationMinutes")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("duration_minutes");
 
                     b.Property<DateOnly>("LogDate")
@@ -57,15 +57,15 @@ namespace FiTrack.Api.Migrations
                         .HasColumnName("log_date");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("notes");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -78,7 +78,7 @@ namespace FiTrack.Api.Migrations
 
                     b.ToTable("tbl_activity_logs", null, t =>
                         {
-                            t.HasCheckConstraint("CK_tbl_activity_logs_duration", "[duration_minutes] > 0");
+                            t.HasCheckConstraint("CK_tbl_activity_logs_duration", "duration_minutes > 0");
                         });
                 });
 
@@ -86,25 +86,25 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("Icon")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)")
+                        .HasColumnType("character varying(10)")
                         .HasColumnName("icon");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
                     b.HasKey("Id");
@@ -119,76 +119,76 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Calories")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(0)
                         .HasColumnName("calories");
 
                     b.Property<decimal>("Carbs")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(6, 2)
-                        .HasColumnType("decimal(6,2)")
+                        .HasColumnType("numeric(6,2)")
                         .HasDefaultValue(0m)
                         .HasColumnName("carbs");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<decimal>("Fat")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(6, 2)
-                        .HasColumnType("decimal(6,2)")
+                        .HasColumnType("numeric(6,2)")
                         .HasDefaultValue(0m)
                         .HasColumnName("fat");
 
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)")
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("image_url");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true)
                         .HasColumnName("is_active");
 
                     b.Property<bool>("IsFavorite")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("is_favorite");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("name");
 
                     b.Property<decimal>("Protein")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(6, 2)
-                        .HasColumnType("decimal(6,2)")
+                        .HasColumnType("numeric(6,2)")
                         .HasDefaultValue(0m)
                         .HasColumnName("protein");
 
                     b.Property<string>("ServingDescription")
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("serving_description");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -204,36 +204,36 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Calories")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("calories");
 
                     b.Property<decimal>("Carbs")
                         .HasPrecision(6, 2)
-                        .HasColumnType("decimal(6,2)")
+                        .HasColumnType("numeric(6,2)")
                         .HasColumnName("carbs");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<decimal>("Fat")
                         .HasPrecision(6, 2)
-                        .HasColumnType("decimal(6,2)")
+                        .HasColumnType("numeric(6,2)")
                         .HasColumnName("fat");
 
                     b.Property<int?>("FoodId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("food_id");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true)
                         .HasColumnName("is_active");
 
@@ -242,57 +242,57 @@ namespace FiTrack.Api.Migrations
                         .HasColumnName("log_date");
 
                     b.Property<DateTime>("LoggedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("logged_at");
 
                     b.Property<int?>("MealId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("meal_id");
 
                     b.Property<string>("MealSlot")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasColumnType("character varying(20)")
                         .HasColumnName("meal_slot");
 
                     b.Property<string>("NameSnapshot")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("name_snapshot");
 
                     b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("note");
 
                     b.Property<decimal>("Protein")
                         .HasPrecision(6, 2)
-                        .HasColumnType("decimal(6,2)")
+                        .HasColumnType("numeric(6,2)")
                         .HasColumnName("protein");
 
                     b.Property<decimal>("Quantity")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(8, 2)
-                        .HasColumnType("decimal(8,2)")
+                        .HasColumnType("numeric(8,2)")
                         .HasDefaultValue(1m)
                         .HasColumnName("quantity");
 
                     b.Property<string>("ServingDescriptionSnapshot")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("serving_description_snapshot");
 
                     b.Property<string>("SourceType")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasColumnType("character varying(20)")
                         .HasColumnName("source_type");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -307,9 +307,9 @@ namespace FiTrack.Api.Migrations
 
                     b.ToTable("tbl_food_logs", null, t =>
                         {
-                            t.HasCheckConstraint("CK_tbl_food_logs_meal_slot", "[meal_slot] IS NULL OR [meal_slot] IN ('breakfast', 'lunch', 'dinner', 'snack')");
+                            t.HasCheckConstraint("CK_tbl_food_logs_meal_slot", "meal_slot IS NULL OR meal_slot IN ('breakfast', 'lunch', 'dinner', 'snack')");
 
-                            t.HasCheckConstraint("CK_tbl_food_logs_source_type", "[source_type] IN ('food', 'meal', 'custom')");
+                            t.HasCheckConstraint("CK_tbl_food_logs_source_type", "source_type IN ('food', 'meal', 'custom')");
                         });
                 });
 
@@ -317,49 +317,49 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)")
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("description");
 
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)")
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("image_url");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true)
                         .HasColumnName("is_active");
 
                     b.Property<bool>("IsFavorite")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("is_favorite");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("name");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -376,32 +376,32 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<int>("FoodId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("food_id");
 
                     b.Property<int>("MealId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("meal_id");
 
                     b.Property<decimal>("Quantity")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(8, 2)
-                        .HasColumnType("decimal(8,2)")
+                        .HasColumnType("numeric(8,2)")
                         .HasDefaultValue(1m)
                         .HasColumnName("quantity");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id");
@@ -420,46 +420,46 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BodyPart")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("body_part");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("ExerciseDemoGif")
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)")
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("exercise_demo_gif");
 
                     b.Property<string>("ExerciseType")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasColumnType("character varying(20)")
                         .HasColumnName("exercise_type");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true)
                         .HasColumnName("is_active");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("name");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id");
@@ -475,9 +475,9 @@ namespace FiTrack.Api.Migrations
 
                     b.ToTable("lkp_exercise_catalog", null, t =>
                         {
-                            t.HasCheckConstraint("CK_lkp_exercise_catalog_body_part", "[body_part] IS NULL OR [body_part] IN ('Chest', 'Shoulders', 'Bicep', 'Tricep', 'Back', 'Quadriceps', 'Hamstring', 'Calf', 'Abs', 'Forearm')");
+                            t.HasCheckConstraint("CK_lkp_exercise_catalog_body_part", "body_part IS NULL OR body_part IN ('Chest', 'Shoulders', 'Bicep', 'Tricep', 'Back', 'Quadriceps', 'Hamstring', 'Calf', 'Abs', 'Forearm')");
 
-                            t.HasCheckConstraint("CK_lkp_exercise_catalog_exercise_type", "[exercise_type] IN ('Compound', 'Accessory', 'Core', 'Cardio')");
+                            t.HasCheckConstraint("CK_lkp_exercise_catalog_exercise_type", "exercise_type IN ('Compound', 'Accessory', 'Core', 'Cardio')");
                         });
                 });
 
@@ -485,36 +485,36 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("MuscleFocus")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("muscle_focus");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
                     b.Property<int?>("SortOrder")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("sort_order");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -533,55 +533,55 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<decimal?>("CurrentWorkingWeight")
                         .HasPrecision(6, 2)
-                        .HasColumnType("decimal(6,2)")
+                        .HasColumnType("numeric(6,2)")
                         .HasColumnName("current_working_weight");
 
                     b.Property<int>("ExerciseId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("exercise_id");
 
                     b.Property<int>("ExerciseOrder")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("exercise_order");
 
                     b.Property<decimal?>("InitialWeight")
                         .HasPrecision(6, 2)
-                        .HasColumnType("decimal(6,2)")
+                        .HasColumnType("numeric(6,2)")
                         .HasColumnName("initial_weight");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("notes");
 
                     b.Property<int>("TargetRepsMax")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("target_reps_max");
 
                     b.Property<int>("TargetRepsMin")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("target_reps_min");
 
                     b.Property<int>("TargetSets")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("target_sets");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<int>("WorkoutDayId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("workout_day_id");
 
                     b.HasKey("Id");
@@ -595,15 +595,15 @@ namespace FiTrack.Api.Migrations
 
                     b.ToTable("tbl_workout_day_exercises", null, t =>
                         {
-                            t.HasCheckConstraint("CK_tbl_workout_day_exercises_exercise_order", "[exercise_order] > 0");
+                            t.HasCheckConstraint("CK_tbl_workout_day_exercises_exercise_order", "exercise_order > 0");
 
-                            t.HasCheckConstraint("CK_tbl_workout_day_exercises_target_reps_max", "[target_reps_max] > 0");
+                            t.HasCheckConstraint("CK_tbl_workout_day_exercises_target_reps_max", "target_reps_max > 0");
 
-                            t.HasCheckConstraint("CK_tbl_workout_day_exercises_target_reps_min", "[target_reps_min] > 0");
+                            t.HasCheckConstraint("CK_tbl_workout_day_exercises_target_reps_min", "target_reps_min > 0");
 
-                            t.HasCheckConstraint("CK_tbl_workout_day_exercises_target_reps_range", "[target_reps_max] >= [target_reps_min]");
+                            t.HasCheckConstraint("CK_tbl_workout_day_exercises_target_reps_range", "target_reps_max >= target_reps_min");
 
-                            t.HasCheckConstraint("CK_tbl_workout_day_exercises_target_sets", "[target_sets] > 0");
+                            t.HasCheckConstraint("CK_tbl_workout_day_exercises_target_sets", "target_sets > 0");
                         });
                 });
 
@@ -611,27 +611,27 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("completed_at");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true)
                         .HasColumnName("is_active");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("notes");
 
                     b.Property<DateOnly>("SessionDate")
@@ -641,29 +641,29 @@ namespace FiTrack.Api.Migrations
                     b.Property<string>("SessionName")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
+                        .HasColumnType("character varying(150)")
                         .HasColumnName("session_name");
 
                     b.Property<DateTime>("StartedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("started_at");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasColumnType("character varying(20)")
                         .HasColumnName("status");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.Property<int?>("WorkoutDayId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("workout_day_id");
 
                     b.HasKey("Id");
@@ -682,7 +682,7 @@ namespace FiTrack.Api.Migrations
 
                     b.ToTable("tbl_workout_sessions", null, t =>
                         {
-                            t.HasCheckConstraint("CK_tbl_workout_sessions_status", "[status] IN ('in_progress', 'completed', 'cancelled')");
+                            t.HasCheckConstraint("CK_tbl_workout_sessions_status", "status IN ('in_progress', 'completed', 'cancelled')");
                         });
                 });
 
@@ -690,71 +690,71 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal?>("ActualWorkingWeight")
                         .HasPrecision(6, 2)
-                        .HasColumnType("decimal(6,2)")
+                        .HasColumnType("numeric(6,2)")
                         .HasColumnName("actual_working_weight");
 
                     b.Property<string>("BodyPartSnapshot")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("body_part_snapshot");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<int>("ExerciseId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("exercise_id");
 
                     b.Property<string>("ExerciseNameSnapshot")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("exercise_name_snapshot");
 
                     b.Property<int>("ExerciseOrder")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("exercise_order");
 
                     b.Property<string>("ExerciseTypeSnapshot")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasColumnType("character varying(20)")
                         .HasColumnName("exercise_type_snapshot");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("notes");
 
                     b.Property<decimal?>("PlannedWorkingWeight")
                         .HasPrecision(6, 2)
-                        .HasColumnType("decimal(6,2)")
+                        .HasColumnType("numeric(6,2)")
                         .HasColumnName("planned_working_weight");
 
                     b.Property<int?>("TargetRepsMax")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("target_reps_max");
 
                     b.Property<int?>("TargetRepsMin")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("target_reps_min");
 
                     b.Property<int?>("TargetSets")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("target_sets");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<int>("WorkoutSessionId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("workout_session_id");
 
                     b.HasKey("Id");
@@ -768,15 +768,15 @@ namespace FiTrack.Api.Migrations
 
                     b.ToTable("tbl_workout_session_exercises", null, t =>
                         {
-                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_exercise_order", "[exercise_order] > 0");
+                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_exercise_order", "exercise_order > 0");
 
-                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_target_reps_max", "[target_reps_max] IS NULL OR [target_reps_max] > 0");
+                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_target_reps_max", "target_reps_max IS NULL OR target_reps_max > 0");
 
-                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_target_reps_min", "[target_reps_min] IS NULL OR [target_reps_min] > 0");
+                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_target_reps_min", "target_reps_min IS NULL OR target_reps_min > 0");
 
-                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_target_reps_range", "([target_reps_min] IS NULL AND [target_reps_max] IS NULL) OR ([target_reps_min] IS NOT NULL AND [target_reps_max] IS NOT NULL AND [target_reps_max] >= [target_reps_min])");
+                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_target_reps_range", "(target_reps_min IS NULL AND target_reps_max IS NULL) OR (target_reps_min IS NOT NULL AND target_reps_max IS NOT NULL AND target_reps_max >= target_reps_min)");
 
-                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_target_sets", "[target_sets] IS NULL OR [target_sets] > 0");
+                            t.HasCheckConstraint("CK_tbl_workout_session_exercises_target_sets", "target_sets IS NULL OR target_sets > 0");
                         });
                 });
 
@@ -784,40 +784,40 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Completed")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("completed");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<int>("Reps")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("reps");
 
                     b.Property<int>("SetNumber")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("set_number");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<decimal?>("Weight")
                         .HasPrecision(6, 2)
-                        .HasColumnType("decimal(6,2)")
+                        .HasColumnType("numeric(6,2)")
                         .HasColumnName("weight");
 
                     b.Property<int>("WorkoutSessionExerciseId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("workout_session_exercise_id");
 
                     b.HasKey("Id");
@@ -829,9 +829,9 @@ namespace FiTrack.Api.Migrations
 
                     b.ToTable("tbl_workout_set_logs", null, t =>
                         {
-                            t.HasCheckConstraint("CK_tbl_workout_set_logs_reps", "[reps] >= 0");
+                            t.HasCheckConstraint("CK_tbl_workout_set_logs_reps", "reps >= 0");
 
-                            t.HasCheckConstraint("CK_tbl_workout_set_logs_set_number", "[set_number] > 0");
+                            t.HasCheckConstraint("CK_tbl_workout_set_logs_set_number", "set_number > 0");
                         });
                 });
 
@@ -839,29 +839,29 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("PasscodeHash")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("passcode_hash");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("username");
 
                     b.HasKey("Id");
@@ -886,50 +886,50 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<int?>("DailyCalorieGoal")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("daily_calorie_goal");
 
                     b.Property<int?>("DailyCarbGoal")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("daily_carb_goal");
 
                     b.Property<int?>("DailyFatGoal")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("daily_fat_goal");
 
                     b.Property<int?>("DailyProteinGoal")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("daily_protein_goal");
 
                     b.Property<DateTime>("EffectiveFrom")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("effective_from");
 
                     b.Property<DateTime?>("EffectiveTo")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("effective_to");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.Property<int?>("WeeklyExerciseGoal")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("weekly_exercise_goal");
 
                     b.Property<decimal?>("WeightGoal")
                         .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)")
+                        .HasColumnType("numeric(5,2)")
                         .HasColumnName("weight_goal");
 
                     b.HasKey("Id");
@@ -944,45 +944,45 @@ namespace FiTrack.Api.Migrations
             modelBuilder.Entity("FiTrack.Api.Models.Users.UserProfile", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.Property<decimal?>("CurrentWeight")
                         .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)")
+                        .HasColumnType("numeric(5,2)")
                         .HasColumnName("current_weight");
 
                     b.Property<int?>("DailyCalorieGoal")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("daily_calorie_goal");
 
                     b.Property<int?>("DailyCarbGoal")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("daily_carb_goal");
 
                     b.Property<int?>("DailyFatGoal")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("daily_fat_goal");
 
                     b.Property<int?>("DailyProteinGoal")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("daily_protein_goal");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<int?>("WeeklyExerciseGoal")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("weekly_exercise_goal");
 
                     b.Property<int?>("WeeklyGymGoal")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("weekly_gym_goal");
 
                     b.Property<decimal?>("WeightGoal")
                         .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)")
+                        .HasColumnType("numeric(5,2)")
                         .HasColumnName("weight_goal");
 
                     b.HasKey("UserId");
@@ -994,13 +994,13 @@ namespace FiTrack.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<DateOnly>("LogDate")
@@ -1008,7 +1008,7 @@ namespace FiTrack.Api.Migrations
                         .HasColumnName("log_date");
 
                     b.Property<DateTime>("LoggedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("logged_at");
 
                     b.Property<string>("Note")
@@ -1016,16 +1016,16 @@ namespace FiTrack.Api.Migrations
                         .HasColumnName("note");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.Property<decimal>("Weight")
                         .HasPrecision(5, 2)
-                        .HasColumnType("decimal(5,2)")
+                        .HasColumnType("numeric(5,2)")
                         .HasColumnName("weight");
 
                     b.HasKey("Id");

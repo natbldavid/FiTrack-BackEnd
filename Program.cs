@@ -65,7 +65,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddDbContext<FiTrackDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("FiTrackDb")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("FiTrackDb")));
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -105,6 +105,12 @@ builder.Services
                 Encoding.UTF8.GetBytes(jwtKey))
         };
     });
+
+if (!builder.Environment.IsDevelopment())
+{
+    builder.WebHost.UseUrls(
+        $"http://0.0.0.0:{Environment.GetEnvironmentVariable("PORT") ?? "8080"}");
+}
 
 var app = builder.Build();
 

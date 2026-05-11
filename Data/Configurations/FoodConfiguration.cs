@@ -68,12 +68,10 @@ public class FoodConfiguration : IEntityTypeConfiguration<Food>
 
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.Property(x => x.UpdatedAt)
             .HasColumnName("updated_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.HasIndex(x => x.UserId);

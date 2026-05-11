@@ -27,7 +27,6 @@ public class WeightLogConfiguration : IEntityTypeConfiguration<WeightLog>
 
         entity.Property(x => x.LoggedAt)
             .HasColumnName("logged_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.Property(x => x.Weight)
@@ -41,12 +40,10 @@ public class WeightLogConfiguration : IEntityTypeConfiguration<WeightLog>
 
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.Property(x => x.UpdatedAt)
             .HasColumnName("updated_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.HasIndex(x => new { x.UserId, x.LogDate })

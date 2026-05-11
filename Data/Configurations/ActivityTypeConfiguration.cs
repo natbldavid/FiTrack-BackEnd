@@ -28,7 +28,6 @@ public class ActivityTypeConfiguration : IEntityTypeConfiguration<ActivityType>
 
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.HasIndex(x => x.Name)

@@ -12,11 +12,11 @@ public class ExerciseCatalogConfiguration : IEntityTypeConfiguration<ExerciseCat
         {
             t.HasCheckConstraint(
                 "CK_lkp_exercise_catalog_exercise_type",
-                "[exercise_type] IN ('Compound', 'Accessory', 'Core', 'Cardio')");
+                "exercise_type IN ('Compound', 'Accessory', 'Core', 'Cardio')");
 
             t.HasCheckConstraint(
                 "CK_lkp_exercise_catalog_body_part",
-                "[body_part] IS NULL OR [body_part] IN ('Chest', 'Shoulders', 'Bicep', 'Tricep', 'Back', 'Quadriceps', 'Hamstring', 'Calf', 'Abs', 'Forearm')");
+                "body_part IS NULL OR body_part IN ('Chest', 'Shoulders', 'Bicep', 'Tricep', 'Back', 'Quadriceps', 'Hamstring', 'Calf', 'Abs', 'Forearm')");
         });
 
         entity.HasKey(x => x.Id);
@@ -52,12 +52,10 @@ public class ExerciseCatalogConfiguration : IEntityTypeConfiguration<ExerciseCat
 
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.Property(x => x.UpdatedAt)
             .HasColumnName("updated_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.HasIndex(x => x.Name)

@@ -12,7 +12,7 @@ public class ActivityLogConfiguration : IEntityTypeConfiguration<ActivityLog>
         {
             t.HasCheckConstraint(
                 "CK_tbl_activity_logs_duration",
-                "[duration_minutes] > 0");
+                "duration_minutes > 0");
         });
 
         entity.HasKey(x => x.Id);
@@ -47,16 +47,14 @@ public class ActivityLogConfiguration : IEntityTypeConfiguration<ActivityLog>
 
         entity.Property(x => x.Notes)
             .HasColumnName("notes")
-            .HasColumnType("nvarchar(max)");
+            .HasColumnType("text");
 
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.Property(x => x.UpdatedAt)
             .HasColumnName("updated_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.HasIndex(x => x.UserId);

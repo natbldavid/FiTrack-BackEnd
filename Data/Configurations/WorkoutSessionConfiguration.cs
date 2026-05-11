@@ -12,7 +12,7 @@ public class WorkoutSessionConfiguration : IEntityTypeConfiguration<WorkoutSessi
         {
             t.HasCheckConstraint(
                 "CK_tbl_workout_sessions_status",
-                "[status] IN ('in_progress', 'completed', 'cancelled')");
+                "status IN ('in_progress', 'completed', 'cancelled')");
         });
 
         entity.HasKey(x => x.Id);
@@ -40,12 +40,10 @@ public class WorkoutSessionConfiguration : IEntityTypeConfiguration<WorkoutSessi
 
         entity.Property(x => x.StartedAt)
             .HasColumnName("started_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.Property(x => x.CompletedAt)
-            .HasColumnName("completed_at")
-            .HasColumnType("datetime2");
+            .HasColumnName("completed_at");
 
         entity.Property(x => x.Status)
             .HasColumnName("status")
@@ -54,7 +52,7 @@ public class WorkoutSessionConfiguration : IEntityTypeConfiguration<WorkoutSessi
 
         entity.Property(x => x.Notes)
             .HasColumnName("notes")
-            .HasColumnType("nvarchar(max)");
+            .HasColumnType("text");
 
         entity.Property(x => x.IsActive)
             .HasColumnName("is_active")
@@ -63,12 +61,10 @@ public class WorkoutSessionConfiguration : IEntityTypeConfiguration<WorkoutSessi
 
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.Property(x => x.UpdatedAt)
             .HasColumnName("updated_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.HasIndex(x => x.UserId);

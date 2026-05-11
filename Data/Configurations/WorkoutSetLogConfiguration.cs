@@ -12,11 +12,11 @@ public class WorkoutSetLogConfiguration : IEntityTypeConfiguration<WorkoutSetLog
         {
             t.HasCheckConstraint(
                 "CK_tbl_workout_set_logs_set_number",
-                "[set_number] > 0");
+                "set_number > 0");
 
             t.HasCheckConstraint(
                 "CK_tbl_workout_set_logs_reps",
-                "[reps] >= 0");
+                "reps >= 0");
         });
 
         entity.HasKey(x => x.Id);
@@ -48,12 +48,10 @@ public class WorkoutSetLogConfiguration : IEntityTypeConfiguration<WorkoutSetLog
 
         entity.Property(x => x.CreatedAt)
             .HasColumnName("created_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.Property(x => x.UpdatedAt)
             .HasColumnName("updated_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.HasIndex(x => x.WorkoutSessionExerciseId);

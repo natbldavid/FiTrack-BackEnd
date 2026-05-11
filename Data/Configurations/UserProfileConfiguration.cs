@@ -43,7 +43,6 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
 
         entity.Property(x => x.UpdatedAt)
             .HasColumnName("updated_at")
-            .HasColumnType("datetime2")
             .IsRequired();
 
         entity.HasOne(x => x.User)
